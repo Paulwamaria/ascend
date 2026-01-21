@@ -1,12 +1,15 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { http } from "../api/http";
+import useAuth from "../auth/useAuth";
 import { Card, CardHeader, CardBody, Badge } from "../components/UI";
 
 export default function Leaderboard() {
+  const { isAuthed, booting } = useAuth();
   const { data, isLoading, isError } = useQuery({
     queryKey: ["leaderboard"],
     queryFn: async () => (await http.get("/leaderboard/")).data,
+    enabled: !booting && isAuthed,
   });
 
   return (

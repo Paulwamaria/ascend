@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-import { useAuth } from "../auth/AuthContext";
+import useAuth from "../auth/useAuth";
 
 function NavItem({ to, children }) {
   return (
@@ -20,11 +20,12 @@ function NavItem({ to, children }) {
 
 export default function Layout({ children }) {
   const { isAuthed, user, logout } = useAuth();
+  const [open, setOpen] = React.useState(false);
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
       <header className="sticky top-0 z-20 border-b border-slate-800/60 bg-slate-950/70 backdrop-blur">
-        <div className="mx-auto max-w-6xl px-4 py-3 flex items-center gap-3">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-3">
           <Link to="/feed" className="font-extrabold tracking-tight text-lg">
             Ascend
           </Link>
@@ -38,6 +39,12 @@ export default function Layout({ children }) {
           </nav>
 
           <div className="ml-auto flex items-center gap-2">
+            <button
+              onClick={() => setOpen((v) => !v)}
+              className="md:hidden px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sm font-semibold"
+            >
+              Menu
+            </button>
             {isAuthed ? (
               <>
                 <span className="hidden sm:inline text-sm text-slate-300">
@@ -63,23 +70,25 @@ export default function Layout({ children }) {
           </div>
         </div>
 
-        <div className="md:hidden border-t border-slate-800/60">
-          <div className="mx-auto max-w-6xl px-4 py-2 flex gap-1 overflow-x-auto">
-            <NavItem to="/feed">Feed</NavItem>
-            <NavItem to="/circles">Circles</NavItem>
-            <NavItem to="/challenges">Challenges</NavItem>
-            <NavItem to="/leaderboard">Leaderboard</NavItem>
-            {isAuthed && <NavItem to="/profile">Profile</NavItem>}
+        {open && (
+          <div className="md:hidden border-t border-slate-800/60">
+            <div className="mx-auto max-w-6xl px-4 py-3 grid gap-2">
+              <NavItem to="/feed">Hope Feed</NavItem>
+              <NavItem to="/circles">Circles</NavItem>
+              <NavItem to="/challenges">Challenges</NavItem>
+              <NavItem to="/leaderboard">Leaderboard</NavItem>
+              {isAuthed && <NavItem to="/profile">Profile</NavItem>}
+            </div>
           </div>
-        </div>
+        )}
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-8">
+      <main className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {children}
       </main>
 
       <footer className="border-t border-slate-800/60">
-        <div className="mx-auto max-w-6xl px-4 py-6 text-sm text-slate-400">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6 text-sm text-slate-400">
           Built with Django + React • Ascend MVP
         </div>
       </footer>

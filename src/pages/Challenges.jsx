@@ -1,15 +1,16 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { http } from "../api/http";
-import { useAuth } from "../auth/AuthContext";
+import useAuth from "../auth/useAuth";
 import { Card, CardHeader, CardBody, Button, Badge } from "../components/UI";
 
 export default function Challenges() {
-  const { isAuthed } = useAuth();
+  const { isAuthed, booting } = useAuth();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["challenges"],
     queryFn: async () => (await http.get("/challenges/")).data,
+    enabled: !booting && isAuthed,
   });
 
   async function join(id) {

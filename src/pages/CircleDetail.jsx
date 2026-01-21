@@ -2,18 +2,19 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { http } from "../api/http";
-import { useAuth } from "../auth/AuthContext";
+import useAuth from "../auth/useAuth";
 import { Card, CardHeader, CardBody, Textarea, Button, Badge } from "../components/UI";
 
 export default function CircleDetail() {
   const { id } = useParams();
   const qc = useQueryClient();
-  const { isAuthed } = useAuth();
+  const { isAuthed, booting } = useAuth();
   const [content, setContent] = useState("");
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["circlePosts", id],
     queryFn: async () => (await http.get(`/circles/${id}/posts/`)).data,
+    enabled: !booting && isAuthed,
   });
 
   async function postToCircle() {

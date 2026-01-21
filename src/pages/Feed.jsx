@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { http } from "../api/http";
-import { useAuth } from "../auth/AuthContext";
+import useAuth from "../auth/useAuth";
 import { Card, CardHeader, CardBody, Textarea, Button, Badge } from "../components/UI";
 
 export default function Feed() {
-  const { isAuthed } = useAuth();
+  const { isAuthed, booting } = useAuth();
   const qc = useQueryClient();
   const [content, setContent] = useState("");
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["hopeFeed"],
     queryFn: async () => (await http.get("/feed/hope/")).data,
+    enabled: !booting && isAuthed,
   });
 
   async function createHopePost() {

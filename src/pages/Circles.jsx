@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { http } from "../api/http";
 import { Link } from "react-router-dom";
-import { useAuth } from "../auth/AuthContext";
+import useAuth from "../auth/useAuth";
 import { Card, CardHeader, CardBody, Input, Textarea, Button, Badge } from "../components/UI";
 
 export default function Circles() {
-  const { isAuthed } = useAuth();
+  const { isAuthed, booting } = useAuth();
   const qc = useQueryClient();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -14,6 +14,7 @@ export default function Circles() {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["circles"],
     queryFn: async () => (await http.get("/circles/")).data,
+    enabled: !booting && isAuthed,
   });
 
   async function createCircle() {

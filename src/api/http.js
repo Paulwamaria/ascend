@@ -8,7 +8,7 @@ export const http = axios.create({
 
 export const tokenStore = {
     getRefresh:()=> localStorage.getItem("refresh_token"), 
-    setRefresh:()=> localStorage.setItem("refresh_token"),
+    setRefresh:(token)=> localStorage.setItem("refresh_token", token),
     clearRefresh:()=> localStorage.removeItem("refresh_token"),
 
 }

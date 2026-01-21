@@ -1,7 +1,6 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
+import AuthContext from "./authContext";
 import { http, tokenStore } from "../api/http";
-
-const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useState(null);
@@ -44,7 +43,6 @@ export function AuthProvider({ children }) {
       }
     );
     return () => http.interceptors.response.eject(resId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function fetchMe() {
@@ -95,24 +93,15 @@ export function AuthProvider({ children }) {
     setUser(null);
   }
 
-  const value = useMemo(
-    () => ({
-      booting,
-      isAuthed: !!accessToken,
-      user,
-      login,
-      register,
-      logout,
-      refreshMe: fetchMe,
-    }),
-    [accessToken, user, booting]
-  );
+  const value = {
+    booting,
+    isAuthed: !!accessToken,
+    user,
+    login,
+    register,
+    logout,
+    refreshMe: fetchMe,
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
-  return ctx;
 }
