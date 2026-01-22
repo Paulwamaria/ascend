@@ -18,8 +18,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/feed" replace />} />
 
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/auth/login" element={<Login />} />
+        <Route path="/auth/register" element={<Register />} />
 
         <Route path="/feed" element={<Feed />} />
         <Route path="/circles" element={<Circles />} />
