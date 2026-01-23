@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import useAuth from "../auth/useAuth";
+import { useAuth } from "../auth/AuthContext";
 import { Card, CardHeader, CardBody, Input, Button } from "../components/UI";
 
 export default function Register() {

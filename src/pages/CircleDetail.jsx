@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { http } from "../api/http";
-import useAuth from "../auth/useAuth";
+import { useAuth } from "../auth/AuthContext";
 import { Card, CardHeader, CardBody, Textarea, Button, Badge } from "../components/UI";
 
 export default function CircleDetail() {

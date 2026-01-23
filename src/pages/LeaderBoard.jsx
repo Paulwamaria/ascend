@@ -1,7 +1,7 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { http } from "../api/http";
-import useAuth from "../auth/useAuth";
+import { useAuth } from "../auth/AuthContext";
 import { Card, CardHeader, CardBody, Badge } from "../components/UI";
 
 export default function Leaderboard() {

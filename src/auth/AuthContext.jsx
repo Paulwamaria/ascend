@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
-import AuthContext from "./authContext";
+/* eslint-disable react-refresh/only-export-components */
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { http, tokenStore } from "../api/http";
+
+const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useState(null);
@@ -21,35 +23,45 @@ export function AuthProvider({ children }) {
     const resId = http.interceptors.response.use(
       (res) => res,
       async (error) => {
-        const original = error.config;
-        if (error?.response?.status === 401 && !original?._retry) {
+        const original = error.config || {};
+        if (error?.response?.status === 401 && !original._retry) {
           original._retry = true;
+
           const refresh = tokenStore.getRefresh();
           if (!refresh) {
             await logout();
             return Promise.reject(error);
           }
+
           try {
             const { data } = await http.post("/auth/refresh/", { refresh });
             setAccessToken(data.access);
+            original.headers = original.headers || {};
             original.headers.Authorization = `Bearer ${data.access}`;
             return http(original);
-          } catch (e) {
+          } catch {
             await logout();
-            return Promise.reject(e);
+            return Promise.reject(error);
           }
         }
         return Promise.reject(error);
       }
     );
     return () => http.interceptors.response.eject(resId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function fetchMe() {
-    const { data } = await http.get("/me/");
-    setUser(data);
-    return data;
+  async function fetchMe(tokenOverride) {
+    try {
+      const { data } = await http.get("/me/", tokenOverride);
+      setUser(data);
+      return data;
+    } catch (e) {
+      setUser(null);
+      return null;
+    }
   }
+
 
   async function boot() {
     const refresh = tokenStore.getRefresh();
@@ -60,7 +72,10 @@ export function AuthProvider({ children }) {
     try {
       const { data } = await http.post("/auth/refresh/", { refresh });
       setAccessToken(data.access);
-      await fetchMe();
+      const me = await http.get("/me/", {
+        headers: { Authorization: `Bearer ${data.access}` },
+      });
+      setUser(me.data);
     } catch {
       tokenStore.clearRefresh();
       setAccessToken(null);
@@ -79,7 +94,13 @@ export function AuthProvider({ children }) {
     const { data } = await http.post("/auth/login/", { username, password });
     setAccessToken(data.access);
     tokenStore.setRefresh(data.refresh);
-    await fetchMe();
+    // ✅ fetch /me with the token immediately (no race)
+    const me = await http.get("/me/", {
+      headers: { Authorization: `Bearer ${data.access}` },
+    });
+    setUser(me.data);
+
+    return me.data;
   }
 
   async function register(username, email, password) {
@@ -104,4 +125,10 @@ export function AuthProvider({ children }) {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within <AuthProvider />");
+  return ctx;
 }

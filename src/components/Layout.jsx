@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-import useAuth from "../auth/useAuth";
+import { useAuth } from "../auth/AuthContext";
 
 function NavItem({ to, children }) {
   return (
