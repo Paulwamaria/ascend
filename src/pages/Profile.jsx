@@ -13,6 +13,10 @@ export default function Profile() {
   const [skills, setSkills] = useState("");
   const [interests, setInterests] = useState("");
   const [msg, setMsg] = useState("");
+  const badges = user?.badges || [];
+
+  
+
 
   useEffect(() => {
     setDisplayName(p.display_name || "");
@@ -31,6 +35,7 @@ export default function Profile() {
       goals: goals.split(",").map((s) => s.trim()).filter(Boolean),
       skills: skills.split(",").map((s) => s.trim()).filter(Boolean),
       interests: interests.split(",").map((s) => s.trim()).filter(Boolean),
+      
     });
     await refreshMe();
     setMsg("Saved!");
@@ -38,6 +43,7 @@ export default function Profile() {
 
   return (
     <div className="space-y-6">
+      
       <Card>
         <CardHeader
           title="My Profile"
