@@ -1,16 +1,131 @@
-# React + Vite
+🚀 Ascend Frontend (React + Tailwind)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Ascend is a growth-focused social platform that combines community, challenges, competition, and hope to help people level up their lives.
 
-Currently, two official plugins are available:
+This repository contains the React + Tailwind CSS frontend that connects to the Ascend Django REST API.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+✨ Features
 
-## React Compiler
+🔐 JWT authentication (login & register)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+🌱 Hope Feed (share wins & encouragement)
 
-## Expanding the ESLint configuration
+👥 Circles (community groups)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+🎯 Challenges system (join, submit progress, earn points)
+
+🏆 Leaderboard & leveling
+
+🛡 Staff/Admin challenge creation
+
+📱 Fully responsive UI (Tailwind CSS)
+
+🧱 Tech Stack
+
+React (Vite)
+
+Tailwind CSS
+
+TanStack React Query
+
+Axios
+
+React Router
+
+Backend: Django REST API
+
+📂 Project Structure
+src/
+ ├── api/          # axios setup
+ ├── auth/         # AuthContext + routes
+ ├── components/  # UI components
+ ├── pages/       # App pages
+ ├── App.jsx
+ └── main.jsx
+
+⚙️ Setup & Installation (Fedora/Linux)
+1️⃣ Install dependencies
+npm install
+
+2️⃣ Create environment file
+touch .env
+
+
+Add:
+
+VITE_API_BASE=http://127.0.0.1:8000/api
+
+
+(or your deployed backend URL)
+
+3️⃣ Run development server
+npm run dev
+
+
+Frontend runs on:
+
+http://localhost:5173
+
+🔐 Auth Flow (How it works)
+
+Login → receives access + refresh token
+
+Refresh token stored in localStorage
+
+Access token attached automatically to API calls
+
+Auto refresh on 401 responses
+
+🛠 Staff Access
+
+Only staff users can access:
+
+/staff/challenges
+
+
+To create new challenges.
+
+Backend enforces IsAdminUser permission.
+
+📦 Build for production
+npm run build
+
+☁️ Deployment (Vercel)
+
+Push repo to Bitbucket/GitHub
+
+Import project into Vercel
+
+Add environment variable:
+
+VITE_API_BASE=https://YOUR_BACKEND_URL/api
+
+
+Deploy 🎉
+
+🚧 Planned Improvements
+
+Badge system & achievements
+
+Challenge approval workflow
+
+Notifications
+
+Profile progress visualization
+
+Mobile-first polish
+
+Dark/light theme toggle
+
+🤝 Contributing
+
+Pull requests welcome!
+Open issues for feature ideas and bugs.
+
+🧠 Vision
+
+Ascend is built to help people:
+
+Connect. Compete. Grow. Rise.
+
+One step at a time.
