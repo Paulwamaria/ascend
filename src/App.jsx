@@ -3,6 +3,9 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./auth/ProtectedRoute";
 
+import StaffRoute from "./auth/StaffRoute";
+import StaffChallenges from "./pages/StaffChallenges";
+
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Feed from "./pages/Feed";
@@ -33,6 +36,14 @@ export default function App() {
             <ProtectedRoute>
               <Profile />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/staff/challenges"
+          element={
+            <StaffRoute>
+              <StaffChallenges />
+            </StaffRoute>
           }
         />
 

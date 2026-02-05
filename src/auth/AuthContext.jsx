@@ -51,16 +51,34 @@ export function AuthProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function fetchMe(tokenOverride) {
-    try {
-      const { data } = await http.get("/me/", tokenOverride);
-      setUser(data);
-      return data;
-    } catch (e) {
-      setUser(null);
-      return null;
-    }
+  async function ensureAccessToken() {
+  if (accessToken) return accessToken;
+
+  const refresh = tokenStore.getRefresh();
+  if (!refresh) return null;
+
+  const { data } = await http.post("/auth/refresh/", { refresh });
+  setAccessToken(data.access);
+  return data.access;
+}
+
+
+async function fetchMe(tokenOverride) {
+  try {
+    const config =
+      typeof tokenOverride === "string"
+        ? { headers: { Authorization: `Bearer ${tokenOverride}` } }
+        : tokenOverride; // allow passing a full axios config
+
+    const { data } = await http.get("/me/", config);
+    setUser(data);
+    return data;
+  } catch {
+    setUser(null);
+    return null;
   }
+}
+
 
 
   async function boot() {
@@ -116,12 +134,13 @@ export function AuthProvider({ children }) {
 
   const value = {
     booting,
-    isAuthed: !!accessToken,
+    isAuthed: !!accessToken || !!tokenStore.getRefresh(),
     user,
     login,
     register,
     logout,
     refreshMe: fetchMe,
+    ensureAccessToken,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { http } from "../api/http";
 import { Card, CardHeader, CardBody, Input, Textarea, Button, Badge } from "../components/UI";
+import { useAuth } from "../auth/AuthContext";
 
 export default function StaffChallenges() {
   const [title, setTitle] = useState("");
@@ -10,6 +11,7 @@ export default function StaffChallenges() {
   const [points, setPoints] = useState(10);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
+  const {ensureAccessToken} = useAuth()
 
   async function createChallenge() {
     setMsg("");
@@ -20,13 +22,18 @@ export default function StaffChallenges() {
 
     setLoading(true);
     try {
-      await http.post("/challenges/create/", {
-        title,
-        description,
-        start_date: startDate,
-        end_date: endDate,
-        points: Number(points),
-      });
+const token = await ensureAccessToken();
+if (!token) {
+  setMsg("❌ You are not logged in.");
+  return;
+}
+
+await http.post(
+  "/challenges/create/",
+  { title, description, start_date: startDate, end_date: endDate, points: Number(points) },
+  { headers: { Authorization: `Bearer ${token}` } }
+);
+
 
       setTitle("");
       setDescription("");

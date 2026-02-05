@@ -2,10 +2,11 @@ import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 
-function NavItem({ to, children }) {
+function NavItem({ to, children ,onClick}) {
   return (
     <NavLink
-      to={to}
+      to={to} 
+      onClick={onClick}
       className={({ isActive }) =>
         [
           "px-3 py-2 rounded-xl text-sm font-medium transition",
@@ -14,8 +15,11 @@ function NavItem({ to, children }) {
       }
     >
       {children}
+      
     </NavLink>
+    
   );
+  
 }
 
 export default function Layout({ children }) {
@@ -36,6 +40,8 @@ export default function Layout({ children }) {
             <NavItem to="/challenges">Challenges</NavItem>
             <NavItem to="/leaderboard">Leaderboard</NavItem>
             {isAuthed && <NavItem to="/profile">Profile</NavItem>}
+            {user?.is_staff && <NavItem to="/staff/challenges">Staff</NavItem>}
+
           </nav>
 
           <div className="ml-auto flex items-center gap-2">
@@ -73,11 +79,13 @@ export default function Layout({ children }) {
         {open && (
           <div className="md:hidden border-t border-slate-800/60">
             <div className="mx-auto max-w-6xl px-4 py-3 grid gap-2">
-              <NavItem to="/feed">Hope Feed</NavItem>
+              <NavItem to="/feed"onClick={() => setOpen(false)} >Hope Feed</NavItem>
               <NavItem to="/circles">Circles</NavItem>
               <NavItem to="/challenges">Challenges</NavItem>
               <NavItem to="/leaderboard">Leaderboard</NavItem>
               {isAuthed && <NavItem to="/profile">Profile</NavItem>}
+              {user?.is_staff && <NavItem to="/staff/challenges">Staff</NavItem>}
+
             </div>
           </div>
         )}
