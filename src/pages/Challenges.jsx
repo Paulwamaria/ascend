@@ -1,126 +1,185 @@
 import React, { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { http } from "../api/http";
 import { useAuth } from "../auth/AuthContext";
 import { Card, CardHeader, CardBody, Button, Badge, Input, Textarea } from "../components/UI";
+import EmptyState from "../components/EmptyState";
 
-export default function StaffChallenges() {
-  const { ensureAccessToken } = useAuth();
-  const qc = useQueryClient();
-
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [points, setPoints] = useState(10);
-
+function SubmitModal({ open, onClose, onSubmit, challengeTitle }) {
+  const [note, setNote] = useState("");
+  const [proofUrl, setProofUrl] = useState("");
   const [loading, setLoading] = useState(false);
-  const [msg, setMsg] = useState("");
 
-  function validate() {
-    if (!title.trim() || !startDate || !endDate) {
-      return "Title, start date and end date are required.";
-    }
-    const s = new Date(startDate);
-    const e = new Date(endDate);
-    if (Number.isNaN(s.getTime()) || Number.isNaN(e.getTime())) {
-      return "Invalid dates.";
-    }
-    if (e < s) {
-      return "End date must be the same day or after the start date.";
-    }
-    const p = Number(points);
-    if (!Number.isFinite(p) || p <= 0) {
-      return "Points must be a positive number.";
-    }
-    return null;
-  }
+  if (!open) return null;
 
-  async function createChallenge() {
-    setMsg("");
-    const err = validate();
-    if (err) {
-      setMsg(`❌ ${err}`);
-      return;
-    }
-
+  async function handleSubmit() {
     setLoading(true);
     try {
-      const token = await ensureAccessToken();
-      if (!token) {
-        setMsg("❌ Not logged in. Please login again.");
-        return;
-      }
-
-      await http.post(
-        "/challenges/create/",
-        {
-          title: title.trim(),
-          description,
-          start_date: startDate,
-          end_date: endDate,
-          points: Number(points),
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      setTitle("");
-      setDescription("");
-      setStartDate("");
-      setEndDate("");
-      setPoints(10);
-
-      setMsg("✅ Challenge created.");
-      qc.invalidateQueries({ queryKey: ["challenges"] });
-    } catch (e) {
-      const status = e?.response?.status;
-      if (status === 401) setMsg("❌ Unauthorized (401). Please login again.");
-      else if (status === 403) setMsg("❌ Forbidden (403). Your account is not staff.");
-      else setMsg("❌ Failed to create challenge.");
+      await onSubmit({ note, proof_url: proofUrl });
+      setNote("");
+      setProofUrl("");
+      onClose();
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="space-y-6 sm:space-y-8">
-      <Card className="border-indigo-600/30 bg-slate-900/40">
-        <CardHeader
-          title="Staff • Create Challenge"
-          subtitle="Only staff can access this page."
-          right={<Badge>Admin</Badge>}
-        />
-        <CardBody className="space-y-3">
-          {msg ? <div className="text-sm text-slate-200">{msg}</div> : null}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+      <div className="w-full max-w-lg rounded-2xl border border-slate-800 bg-slate-950 p-4 sm:p-6">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="text-lg font-bold">Submit Challenge</div>
+            <div className="text-sm text-slate-300">{challengeTitle}</div>
+          </div>
+          <Button variant="secondary" onClick={onClose}>
+            Close
+          </Button>
+        </div>
 
-          <Input
-            placeholder="Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-
+        <div className="mt-4 space-y-3">
           <Textarea
             rows={4}
-            placeholder="Description (optional)"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Add a short note (what you did, what you learned)..."
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+          />
+          <Input
+            placeholder="Proof link (optional) e.g. GitHub / Drive / Tweet"
+            value={proofUrl}
+            onChange={(e) => setProofUrl(e.target.value)}
           />
 
-          <div className="grid gap-3 sm:grid-cols-3">
-            <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-            <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-            <Input type="number" value={points} onChange={(e) => setPoints(e.target.value)} />
-          </div>
-
-          <div className="flex justify-end">
-            <Button onClick={createChallenge} disabled={loading}>
-              {loading ? "Creating..." : "Create Challenge"}
+          <div className="flex justify-end gap-2">
+            <Button variant="secondary" onClick={onClose} disabled={loading}>
+              Cancel
+            </Button>
+            <Button onClick={handleSubmit} disabled={loading}>
+              {loading ? "Submitting..." : "Submit"}
             </Button>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function Challenges() {
+  const { isAuthed, refreshMe } = useAuth();
+  const qc = useQueryClient();
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [activeChallenge, setActiveChallenge] = useState(null);
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["challenges"],
+    queryFn: async () => (await http.get("/challenges/")).data,
+  });
+
+  async function join(id) {
+    await http.post(`/challenges/${id}/join/`);
+    await refreshMe();
+    qc.invalidateQueries({ queryKey: ["challenges"] });
+  }
+
+  function openSubmit(ch) {
+    setActiveChallenge(ch);
+    setModalOpen(true);
+  }
+
+  async function submit({ note, proof_url }) {
+    if (!activeChallenge) return;
+    await http.post(`/challenges/submit/`, {
+      challenge: activeChallenge.id,
+      note,
+      proof_url,
+    });
+    await refreshMe();
+    qc.invalidateQueries({ queryKey: ["challenges"] });
+  }
+
+  const challenges = data || [];
+
+  return (
+    <div className="space-y-6 sm:space-y-8">
+      <Card>
+        <CardHeader
+          title="Challenges"
+          subtitle="Compete with yourself. Earn points. Level up."
+          right={<Badge>Weekly</Badge>}
+        />
+        <CardBody className="text-sm text-slate-300">
+          {isAuthed ? "Join a challenge and submit proof/notes." : "Login to join and submit challenges."}
         </CardBody>
       </Card>
+
+      {isLoading ? <div className="text-slate-300">Loading...</div> : null}
+      {isError ? <div className="text-rose-400">Failed to load challenges.</div> : null}
+
+      {!isLoading && !isError && challenges.length === 0 ? (
+        <EmptyState
+          icon="🎯"
+          title="No challenges yet."
+          message="Staff will add a starter set of challenges soon."
+          ctaLabel={isAuthed ? "" : "Login"}
+          onCta={() => window.location.assign("/login")}
+        />
+      ) : (
+        <div className="grid gap-4">
+          {challenges.map((ch) => {
+            const status = ch.my_status || (ch.has_submitted ? "submitted" : ch.is_joined ? "joined" : null);
+
+            return (
+              <Card key={ch.id}>
+                <CardBody className="space-y-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="text-lg font-bold">{ch.title}</div>
+                      <div className="text-sm text-slate-300 whitespace-pre-wrap">{ch.description}</div>
+                    </div>
+                    <div className="flex flex-col items-end gap-2">
+                      <Badge>{ch.points} pts</Badge>
+                      {status === "approved" ? <Badge>Approved ✅</Badge> : null}
+                      {status === "submitted" ? <Badge>Submitted ✅</Badge> : null}
+                      {status === "joined" ? <Badge>Joined ✅</Badge> : null}
+                    </div>
+                  </div>
+
+                  <div className="text-xs text-slate-400">
+                    {ch.start_date} → {ch.end_date}
+                  </div>
+
+                  {isAuthed ? (
+                    <div className="flex justify-end">
+                      {status === "approved" || status === "submitted" ? (
+                        <Button variant="secondary" onClick={() => openSubmit(ch)}>
+                          Edit submission
+                        </Button>
+                      ) : status === "joined" ? (
+                        <Button onClick={() => openSubmit(ch)}>Submit</Button>
+                      ) : (
+                        <Button variant="secondary" onClick={() => join(ch.id)}>
+                          Join
+                        </Button>
+                      )}
+                    </div>
+                  ) : null}
+                </CardBody>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+
+      <SubmitModal
+        open={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setActiveChallenge(null);
+        }}
+        onSubmit={submit}
+        challengeTitle={activeChallenge?.title || ""}
+      />
     </div>
   );
 }
