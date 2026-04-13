@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Card, CardBody, CardHeader, Button, Badge } from "./UI";
+import { Card, CardBody, CardHeader, Button, Badge } from "../components/UI";
 
 export default function OnboardingCard({ onboarding, onPostClick }) {
   const steps = [
