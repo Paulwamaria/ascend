@@ -100,70 +100,145 @@ export default function Challenges() {
 
   const challenges = data || [];
 
+  function getDaysLeft(endDate) {
+    const now = new Date();
+    const end = new Date(endDate);
+    const diff = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+    return diff;
+  }
+
   return (
-    <div className="space-y-6 sm:space-y-8">
-      <Card>
-        <CardHeader
-          title="Challenges"
-          subtitle="Compete with yourself. Earn points. Level up."
-          right={<Badge>Weekly</Badge>}
-        />
+    <div className="space-y-8 sm:space-y-10">
+      {/* Header */}
+      <section className="space-y-2">
+        <div className="flex gap-2">
+          <Badge>Growth</Badge>
+          <Badge>Discipline</Badge>
+        </div>
+
+        <h1 className="text-2xl sm:text-3xl font-bold text-white">
+          Challenges
+        </h1>
+
+        <p className="max-w-2xl text-sm sm:text-base text-slate-400">
+          Push yourself forward. Join a challenge, stay consistent, and earn your progress.
+        </p>
+      </section>
+
+      {/* Intro Card */}
+      <Card className="border-indigo-500/20 bg-gradient-to-r from-slate-900 to-indigo-950/30 shadow-lg">
         <CardBody className="text-sm text-slate-300">
-          {isAuthed ? "Join a challenge and submit proof/notes." : "Login to join and submit challenges."}
+          {isAuthed
+            ? "Join a challenge and submit proof to earn points."
+            : "Login to join challenges and track your progress."}
         </CardBody>
       </Card>
 
-      {isLoading ? <div className="text-slate-300">Loading...</div> : null}
-      {isError ? <div className="text-rose-400">Failed to load challenges.</div> : null}
+      {/* States */}
+      {isLoading && <div className="text-slate-300">Loading...</div>}
+      {isError && <div className="text-rose-400">Failed to load challenges.</div>}
 
       {!isLoading && !isError && challenges.length === 0 ? (
         <EmptyState
           icon="🎯"
           title="No challenges yet."
-          message="Staff will add a starter set of challenges soon."
+          message="Growth needs direction. Staff will add challenges soon."
           ctaLabel={isAuthed ? "" : "Login"}
           onCta={() => window.location.assign("/login")}
         />
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-5">
           {challenges.map((ch) => {
-            const status = ch.my_status || (ch.has_submitted ? "submitted" : ch.is_joined ? "joined" : null);
+            const status =
+              ch.my_status ||
+              (ch.has_submitted
+                ? "submitted"
+                : ch.is_joined
+                ? "joined"
+                : null);
+
+            const daysLeft = getDaysLeft(ch.end_date);
 
             return (
-              <Card key={ch.id}>
-                <CardBody className="space-y-3">
+              <Card
+                key={ch.id}
+                className="border-slate-800 bg-slate-900/60 shadow-md hover:shadow-lg transition"
+              >
+                <CardBody className="space-y-4 p-5">
+                  {/* Top */}
                   <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <div className="text-lg font-bold">{ch.title}</div>
-                      <div className="text-sm text-slate-300 whitespace-pre-wrap">{ch.description}</div>
+                    <div className="space-y-1">
+                      <div className="text-lg font-bold text-white">
+                        {ch.title}
+                      </div>
+                      <div className="text-sm text-slate-400 whitespace-pre-wrap">
+                        {ch.description}
+                      </div>
                     </div>
+
                     <div className="flex flex-col items-end gap-2">
-                      <Badge>{ch.points} pts</Badge>
-                      {status === "approved" ? <Badge>Approved ✅</Badge> : null}
-                      {status === "submitted" ? <Badge>Submitted ✅</Badge> : null}
-                      {status === "joined" ? <Badge>Joined ✅</Badge> : null}
+                      <Badge className="border-indigo-500/30 bg-indigo-500/10 text-indigo-300">
+                        {ch.points} pts
+                      </Badge>
+
+                      {status === "approved" && (
+                        <Badge className="border-emerald-500/30 bg-emerald-500/10 text-emerald-300">
+                          Approved ✅
+                        </Badge>
+                      )}
+                      {status === "submitted" && (
+                        <Badge className="border-blue-500/30 bg-blue-500/10 text-blue-300">
+                          Submitted
+                        </Badge>
+                      )}
+                      {status === "joined" && (
+                        <Badge className="border-amber-500/30 bg-amber-500/10 text-amber-300">
+                          Joined
+                        </Badge>
+                      )}
                     </div>
                   </div>
 
-                  <div className="text-xs text-slate-400">
-                    {ch.start_date} → {ch.end_date}
+                  {/* Time */}
+                  <div className="flex items-center justify-between text-xs text-slate-500">
+                    <span>
+                      {ch.start_date} → {ch.end_date}
+                    </span>
+
+                    <span
+                      className={
+                        daysLeft <= 2
+                          ? "text-rose-400"
+                          : "text-slate-400"
+                      }
+                    >
+                      {daysLeft > 0
+                        ? `${daysLeft} day${daysLeft !== 1 ? "s" : ""} left`
+                        : "Ended"}
+                    </span>
                   </div>
 
-                  {isAuthed ? (
+                  {/* CTA */}
+                  {isAuthed && (
                     <div className="flex justify-end">
                       {status === "approved" || status === "submitted" ? (
                         <Button variant="secondary" onClick={() => openSubmit(ch)}>
                           Edit submission
                         </Button>
                       ) : status === "joined" ? (
-                        <Button onClick={() => openSubmit(ch)}>Submit</Button>
+                        <Button
+                          className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500"
+                          onClick={() => openSubmit(ch)}
+                        >
+                          Submit
+                        </Button>
                       ) : (
                         <Button variant="secondary" onClick={() => join(ch.id)}>
-                          Join
+                          Join Challenge
                         </Button>
                       )}
                     </div>
-                  ) : null}
+                  )}
                 </CardBody>
               </Card>
             );
