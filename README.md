@@ -1,131 +1,50 @@
-🚀 Ascend Frontend (React + Tailwind)
+# Ascend Frontend
 
-Ascend is a growth-focused social platform that combines community, challenges, competition, and hope to help people level up their lives.
+Ascend is a social growth platform designed to combine networking, motivation, and community engagement through structured interactions such as circles, challenges, and user-generated content.
 
-This repository contains the React + Tailwind CSS frontend that connects to the Ascend Django REST API.
+This repository contains the **frontend application**, built to deliver a responsive, intuitive, and product-focused user experience.
 
-✨ Features
+---
 
-🔐 JWT authentication (login & register)
+## 🚀 Overview
 
-🌱 Hope Feed (share wins & encouragement)
+The Ascend frontend is designed with a strong focus on usability, performance, and scalability. It connects to a backend API to provide real-time and interactive user experiences, including onboarding flows, community participation, and content-driven engagement.
 
-👥 Circles (community groups)
+---
 
-🎯 Challenges system (join, submit progress, earn points)
+## 🧰 Tech Stack
 
-🏆 Leaderboard & leveling
+- **Framework:** React (TypeScript)
+- **Styling:** Tailwind CSS
+- **State & Data Handling:** Context API / Axios
+- **API Integration:** RESTful APIs
+- **Routing:** React Router
+- **Build Tooling:** Vite
+- **Environment:** Linux-based development
 
-🛡 Staff/Admin challenge creation
+---
 
-📱 Fully responsive UI (Tailwind CSS)
+## 🔥 Key Features
 
-🧱 Tech Stack
+- User authentication (login, registration, session handling)
+- Onboarding flows for new users
+- Circles (community groups) and participation
+- Challenge-based engagement system
+- Hope feed (user-generated content)
+- Responsive UI for mobile and desktop
+- Clean and modular component structure
 
-React (Vite)
+---
 
-Tailwind CSS
+## 🧠 Architecture Overview
 
-TanStack React Query
+- **Frontend:** React SPA with modular components
+- **Backend Integration:** Django REST API
+- **Data Flow:** API-driven state with structured endpoints
+- **Styling Approach:** Utility-first design with Tailwind CSS
 
-Axios
+The application is structured to support scalability, maintainability, and future feature expansion.
 
-React Router
+---
 
-Backend: Django REST API
-
-📂 Project Structure
-src/
- ├── api/          # axios setup
- ├── auth/         # AuthContext + routes
- ├── components/  # UI components
- ├── pages/       # App pages
- ├── App.jsx
- └── main.jsx
-
-⚙️ Setup & Installation (Fedora/Linux)
-1️⃣ Install dependencies
-npm install
-
-2️⃣ Create environment file
-touch .env
-
-
-Add:
-
-VITE_API_BASE=http://127.0.0.1:8000/api
-
-
-(or your deployed backend URL)
-
-3️⃣ Run development server
-npm run dev
-
-
-Frontend runs on:
-
-http://localhost:5173
-
-🔐 Auth Flow (How it works)
-
-Login → receives access + refresh token
-
-Refresh token stored in localStorage
-
-Access token attached automatically to API calls
-
-Auto refresh on 401 responses
-
-🛠 Staff Access
-
-Only staff users can access:
-
-/staff/challenges
-
-
-To create new challenges.
-
-Backend enforces IsAdminUser permission.
-
-📦 Build for production
-npm run build
-
-☁️ Deployment (Vercel)
-
-Push repo to Bitbucket/GitHub
-
-Import project into Vercel
-
-Add environment variable:
-
-VITE_API_BASE=https://YOUR_BACKEND_URL/api
-
-
-Deploy 🎉
-
-🚧 Planned Improvements
-
-Badge system & achievements
-
-Challenge approval workflow
-
-Notifications
-
-Profile progress visualization
-
-Mobile-first polish
-
-Dark/light theme toggle
-
-🤝 Contributing
-
-Pull requests welcome!
-Open issues for feature ideas and bugs.
-
-🧠 Vision
-
-Ascend is built to help people:
-
-Connect. Compete. Grow. Rise.
-
-One step at a time.
+## 📂 Project Structure
