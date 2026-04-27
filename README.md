@@ -1,14 +1,30 @@
-# Ascend Frontend
+# Ascend Frontend 🚀
 
-Ascend is a social growth platform designed to combine networking, motivation, and community engagement through structured interactions such as circles, challenges, and user-generated content.
+Frontend application for **Ascend**, a social growth platform designed to combine networking, motivation, and community engagement through structured interactions such as circles, challenges, and user-generated content.
 
-This repository contains the **frontend application**, built to deliver a responsive, intuitive, and product-focused user experience.
+This project focuses on delivering a **responsive, real-time, and product-oriented user experience**.
 
 ---
 
 ## 🚀 Overview
 
-The Ascend frontend is designed with a strong focus on usability, performance, and scalability. It connects to a backend API to provide real-time and interactive user experiences, including onboarding flows, community participation, and content-driven engagement.
+Ascend is built around the idea of **intentional interaction**, helping users connect, grow, and stay consistent through structured features.
+
+The frontend integrates with a backend API to support:
+- authentication flows
+- community participation
+- content-driven engagement
+- real-time user interaction
+
+---
+
+## 🎬 Demo (Coming Soon)
+
+<p align="center">
+  <img src="./src/assets/demo.gif" alt="Ascend Demo" width="900"/>
+</p>
+
+> A walkthrough showing onboarding, navigation, and core product interactions.
 
 ---
 
@@ -25,7 +41,7 @@ The Ascend frontend is designed with a strong focus on usability, performance, a
 ### 🏠 Dashboard / Hope Feed
 
 <p align="center">
-  <img src="./src/assets/dashboard.png" alt="Dashboard" width="900"/>
+  <img src="./scr/assets/dashboard.png" alt="Dashboard" width="900"/>
 </p>
 
 Users can share posts, track progress, and engage with community-driven content.
@@ -60,38 +76,39 @@ Structured challenges encourage consistency, competition, and progress tracking.
 
 Profiles highlight goals, skills, and personal growth journey.
 
+---
+
 ## 🧰 Tech Stack
 
 - **Framework:** React (TypeScript)
 - **Styling:** Tailwind CSS
-- **State & Data Handling:** Context API / Axios
-- **API Integration:** RESTful APIs
 - **Routing:** React Router
+- **State Management:** Context API
+- **API Integration:** Axios (REST APIs)
 - **Build Tooling:** Vite
-- **Environment:** Linux-based development
 
 ---
 
 ## 🔥 Key Features
 
-- User authentication (login, registration, session handling)
-- Onboarding flows for new users
-- Circles (community groups) and participation
+- JWT-based authentication flows
+- Onboarding experience for new users
+- Community-driven circles
 - Challenge-based engagement system
 - Hope feed (user-generated content)
-- Responsive UI for mobile and desktop
-- Clean and modular component structure
+- Responsive UI (mobile & desktop)
+- Modular and reusable component structure
 
 ---
 
 ## 🧠 Architecture Overview
 
-- **Frontend:** React SPA with modular components
-- **Backend Integration:** Django REST API
-- **Data Flow:** API-driven state with structured endpoints
-- **Styling Approach:** Utility-first design with Tailwind CSS
+- **Frontend:** React SPA (component-driven architecture)
+- **Backend:** Django REST API
+- **Data Flow:** Client → API → structured state updates
+- **Design System:** Utility-first styling with Tailwind CSS
 
-The application is structured to support scalability, maintainability, and future feature expansion.
+Built with **separation of concerns** to ensure scalability and maintainability.
 
 ---
 
