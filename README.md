@@ -12,6 +12,54 @@ The Ascend frontend is designed with a strong focus on usability, performance, a
 
 ---
 
+## 📸 Screenshots
+
+### 🔐 Authentication
+
+<p align="center">
+  <img src="./assets/login.png" alt="Login Page" width="800"/>
+</p>
+
+---
+
+### 🏠 Dashboard / Hope Feed
+
+<p align="center">
+  <img src="./src/assets/dashboard.png" alt="Dashboard" width="900"/>
+</p>
+
+Users can share posts, track progress, and engage with community-driven content.
+
+---
+
+### 👥 Circles (Communities)
+
+<p align="center">
+  <img src="./src/assets/circles.png" alt="Circles" width="900"/>
+</p>
+
+Users join circles to connect with like-minded individuals and participate in shared growth.
+
+---
+
+### 🏆 Challenges
+
+<p align="center">
+  <img src="./src/assets/challenges.png" alt="Challenges" width="900"/>
+</p>
+
+Structured challenges encourage consistency, competition, and progress tracking.
+
+---
+
+### 👤 Profile
+
+<p align="center">
+  <img src="./src/assets/profile.png" alt="Profile Page" width="900"/>
+</p>
+
+Profiles highlight goals, skills, and personal growth journey.
+
 ## 🧰 Tech Stack
 
 - **Framework:** React (TypeScript)
