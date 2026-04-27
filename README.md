@@ -17,7 +17,7 @@ The Ascend frontend is designed with a strong focus on usability, performance, a
 ### 🔐 Authentication
 
 <p align="center">
-  <img src="./assets/login.png" alt="Login Page" width="800"/>
+  <img src="./scr/assets/login.png" alt="Login Page" width="800"/>
 </p>
 
 ---
